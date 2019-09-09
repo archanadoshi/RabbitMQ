@@ -1,34 +1,41 @@
 package com.springframework.amqp.rabbitmqamqptutorial;
 
-import org.springframework.amqp.core.MessageListener;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.QueueBuilder;
-import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.listener.MessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
 
-    @Autowired
-    ConnectionFactory connectionFactory;
-
-    @Autowired
-    RabbitMQQueueConfig rabbitMQQueueConfig;
-
-    @Autowired
-    RabbitMQMessageListener rabbitMQMessageListener;
+    private static final String myQueue = "TQueue";
 
     @Bean
-    MessageListenerContainer messageListenerContainer()
+    Exchange getExchange()
     {
-        SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer(connectionFactory);
-        simpleMessageListenerContainer.addQueues(rabbitMQQueueConfig.getQueueUsingBinder());
-        simpleMessageListenerContainer.setupMessageListener(rabbitMQMessageListener);
-        return simpleMessageListenerContainer;
+        return ExchangeBuilder.topicExchange("TExchange")
+                .build();
+    }
+
+    @Bean
+    Queue getQueueUsingBinder()
+    {
+        return QueueBuilder.durable(myQueue)
+                .build();
+    }
+
+    @Bean
+    public Binding getBinding()
+    {
+        return BindingBuilder
+                .bind(getQueueUsingBinder())
+                .to(getExchange())
+                .with("TRouting").noargs();
+    }
+
+    @Bean
+    public MessageConverter messageConverter() {
+        return new Jackson2JsonMessageConverter();
     }
 }

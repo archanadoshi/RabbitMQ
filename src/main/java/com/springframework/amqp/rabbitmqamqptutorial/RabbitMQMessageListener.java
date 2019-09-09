@@ -1,14 +1,13 @@
 package com.springframework.amqp.rabbitmqamqptutorial;
 
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageListener;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RabbitMQMessageListener implements MessageListener {
+public class RabbitMQMessageListener {
 
-    @Override
-    public void onMessage(Message message) {
-        System.out.println("Message : " + new String(message.getBody()));
+    @RabbitListener(queues = "TQueue")
+    public void receiveMessage(ExchangeRate message){
+        System.out.println("Message : " + message.getToCurrency() );
     }
 }
