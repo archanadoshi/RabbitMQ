@@ -1,4 +1,4 @@
-package com.springframework.amqp.rabbitmqamqptutorial;
+package com.springframework.amqp.rabbitmq;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

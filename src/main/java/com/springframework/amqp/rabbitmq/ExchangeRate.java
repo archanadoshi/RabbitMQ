@@ -1,4 +1,4 @@
-package com.springframework.amqp.rabbitmqamqptutorial;
+package com.springframework.amqp.rabbitmq;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
